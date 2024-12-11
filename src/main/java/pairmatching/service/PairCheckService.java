@@ -34,18 +34,22 @@ public class PairCheckService {
     }
 
     private void showResult() {
+        Optional<Pair> pair = findPair();
+        if (pair.isPresent()) {
+            OutputView.showPair(pair.get());
+            return;
+        }
+        throw new PairmatchingException(NO_MATCHING_ERROR);
+    }
+
+    private Optional<Pair> findPair() {
         for (int i = 1; i <= MAX_TRY; i++) {
             try {
                 String[] input = InputView.readMission().split(DELIMITER);
                 Course course = Course.fromName(input[COURSE_INDEX].trim());
                 Level level = Level.fromName(input[LEVEL_INDEX].trim());
                 Mission mission = Mission.fromName(input[MISSION_INDEX].trim());
-                Optional<Pair> pair = pairs.findByCourseLevelMission(course, level, mission);
-                if (pair.isPresent()) {
-                    OutputView.showPair(pair.get());
-                    return;
-                }
-                throw new PairmatchingException(NO_MATCHING_ERROR);
+                return pairs.findByCourseLevelMission(course, level, mission);
             } catch (IllegalArgumentException e) {
                 printError(e.getMessage());
             }

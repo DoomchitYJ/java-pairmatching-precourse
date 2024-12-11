@@ -32,8 +32,12 @@ public class Controller {
             }
             if (functionInput.equals(PAIR_CHECK_FUNC)) {
                 PairCheckService pairCheckService = new PairCheckService(pairs);
-                pairCheckService.operate();
-                continue;
+                try {
+                    pairCheckService.operate();
+                    continue;
+                } catch (PairmatchingException e) {
+                    printError(e.getMessage());
+                }
             }
             if (functionInput.equals(PAIR_RESET_FUNC)) {
                 PairResetService pairResetService = new PairResetService(pairs);
